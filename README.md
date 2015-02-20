@@ -5,4 +5,4 @@ Versions used:
 * ffmpeg 1.2 "Magic"  March, 2013
 * lame 3.99.5
 
-Built for internal use by this custom [buildpack](https://github.com/integricho/heroku-buildpack-python-ffmpeg-lame).
+Built for use by this custom [buildpack](https://github.com/consti/heroku-buildpack-ffmpeg-with-lamemp3).
