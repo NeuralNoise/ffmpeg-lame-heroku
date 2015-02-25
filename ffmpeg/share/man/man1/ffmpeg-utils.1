@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "FFMPEG-UTILS 1"
-.TH FFMPEG-UTILS 1 "2013-03-31" " " " "
+.TH FFMPEG-UTILS 1 "2013-06-02" " " " "
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -749,6 +749,29 @@ indication of the corresponding powers of 10 and of 2.
 .IP "\fBY\fR" 4
 .IX Item "Y"
 10^24 / 2^70
+.SH "OPENCL OPTIONS"
+.IX Header "OPENCL OPTIONS"
+When FFmpeg is configured with \f(CW\*(C`\-\-enable\-opencl\*(C'\fR, it is possible
+to set the options for the global OpenCL context.
+.PP
+The list of supported options follows:
+.IP "\fBbuild_options\fR" 4
+.IX Item "build_options"
+Set build options used to compile the registered kernels.
+.Sp
+See reference \*(L"OpenCL Specification Version: 1.2 chapter 5.6.4\*(R".
+.IP "\fBplatform_idx\fR" 4
+.IX Item "platform_idx"
+Select the index of the platform to run OpenCL code.
+.Sp
+The specified index must be one of the indexes in the device list
+which can be obtained with \f(CW\*(C`av_opencl_get_device_list()\*(C'\fR.
+.IP "\fBdevice_idx\fR" 4
+.IX Item "device_idx"
+Select the index of the device used to run OpenCL code.
+.Sp
+The specifed index must be one of the indexes in the device list which
+can be obtained with \f(CW\*(C`av_opencl_get_device_list()\*(C'\fR.
 .SH "SEE ALSO"
 .IX Header "SEE ALSO"
 \&\fIffmpeg\fR\|(1), \fIffplay\fR\|(1), \fIffprobe\fR\|(1), \fIffserver\fR\|(1), \fIlibavutil\fR\|(3)

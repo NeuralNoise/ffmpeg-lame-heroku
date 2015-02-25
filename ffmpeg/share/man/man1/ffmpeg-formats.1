@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "FFMPEG-FORMATS 1"
-.TH FFMPEG-FORMATS 1 "2013-03-31" " " " "
+.TH FFMPEG-FORMATS 1 "2013-06-02" " " " "
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -398,6 +398,17 @@ If set to 0, any file name is accepted.
 .Sp
 The default is \-1, it is equivalent to 1 if the format was automatically
 probed and 0 otherwise.
+.SS "libquvi"
+.IX Subsection "libquvi"
+Play media from Internet services using the quvi project.
+.PP
+The demuxer accepts a \fBformat\fR option to request a specific quality. It
+is by default set to \fIbest\fR.
+.PP
+See <\fBhttp://quvi.sourceforge.net/\fR> for more information.
+.PP
+FFmpeg needs to be built with \f(CW\*(C`\-\-enable\-libquvi\*(C'\fR for this demuxer to be
+enabled.
 .SS "image2"
 .IX Subsection "image2"
 Image file demuxer.
@@ -415,7 +426,7 @@ same for all the files in the sequence.
 This demuxer accepts the following options:
 .IP "\fBframerate\fR" 4
 .IX Item "framerate"
-Set the framerate for the video stream. It defaults to 25.
+Set the frame rate for the video stream. It defaults to 25.
 .IP "\fBloop\fR" 4
 .IX Item "loop"
 If set to 1, loop over the input. Default value is 0.
@@ -502,6 +513,11 @@ to read from. Default value is 0.
 Set the index interval range to check when looking for the first image
 file in the sequence, starting from \fIstart_number\fR. Default value
 is 5.
+.IP "\fBts_from_file\fR" 4
+.IX Item "ts_from_file"
+If set to 1, will set frame timestamp to modification time of image file. Note
+that monotonity of timestamps is not provided: images go in the same order as
+without this option. Default value is 0.
 .IP "\fBvideo_size\fR" 4
 .IX Item "video_size"
 Set the video size of the images to read. If not specified the video
@@ -847,10 +863,11 @@ Note also that the pattern must not necessarily contain \*(L"%d\*(R" or
 .IX Item "start_number number"
 Start the sequence from \fInumber\fR. Default value is 1. Must be a
 positive number.
-.IP "\fBupdatefirst 1|0\fR" 4
-.IX Item "updatefirst 1|0"
-If set to 1, update the first written image file again and
-again. Default value is 0.
+.IP "\fB\-update\fR \fInumber\fR" 4
+.IX Item "-update number"
+If \fInumber\fR is nonzero, the filename will always be interpreted as just a
+filename, not a pattern, and this file will be continuously overwritten with new
+images.
 .PP
 The image muxer supports the .Y.U.V image file format. This format is
 special in that that each image frame consists of three files, for
@@ -1102,6 +1119,23 @@ For example a 3D WebM clip can be created using the following command line:
 .Vb 1
 \&        ffmpeg \-i sample_left_right_clip.mpg \-an \-c:v libvpx \-metadata stereo_mode=left_right \-y stereo_clip.webm
 .Ve
+.PP
+This muxer supports the following options:
+.IP "\fBreserve_index_space\fR" 4
+.IX Item "reserve_index_space"
+By default, this muxer writes the index for seeking (called cues in Matroska
+terms) at the end of the file, because it cannot know in advance how much space
+to leave for the index at the beginning of the file. However for some use cases
+\&\*(-- e.g.  streaming where seeking is possible but slow \*(-- it is useful to put the
+index at the beginning of the file.
+.Sp
+If this option is set to a non-zero value, the muxer will reserve a given amount
+of space in the file header and then try to write the cues there when the muxing
+finishes. If the available space does not suffice, muxing will fail. A safe size
+for most use cases should be about 50kB per hour of video.
+.Sp
+Note that cues are only written if the output is seekable and this option will
+have no effect if it is not.
 .SS "segment, stream_segment, ssegment"
 .IX Subsection "segment, stream_segment, ssegment"
 Basic stream segmenter.

@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "FFMPEG-DEVICES 1"
-.TH FFMPEG-DEVICES 1 "2013-03-31" " " " "
+.TH FFMPEG-DEVICES 1 "2013-06-02" " " " "
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -235,7 +235,7 @@ fail to open.
 Set the video size in the captured video.
 .IP "\fBframerate\fR" 4
 .IX Item "framerate"
-Set the framerate in the captured video.
+Set the frame rate in the captured video.
 .IP "\fBsample_rate\fR" 4
 .IX Item "sample_rate"
 Set the sample rate (in Hz) of the captured audio.
@@ -734,8 +734,8 @@ Video4Linux2 input video device.
 \&\*(L"v4l2\*(R" can be used as alias for \*(L"video4linux2\*(R".
 .PP
 If FFmpeg is built with v4l\-utils support (by using the
-\&\f(CW\*(C`\-\-enable\-libv4l2\*(C'\fR configure option), the device will always rely
-on libv4l2.
+\&\f(CW\*(C`\-\-enable\-libv4l2\*(C'\fR configure option), it is possible to use it with the
+\&\f(CW\*(C`\-use_libv4l2\*(C'\fR input device option.
 .PP
 The name of the device to grab is a file device node, usually Linux
 systems tend to automatically create such nodes when the device
@@ -744,7 +744,7 @@ kind \fI/dev/video\fIN\fI\fR, where \fIN\fR is a number associated to
 the device.
 .PP
 Video4Linux2 devices usually support a limited set of
-\&\fIwidth\fRx\fIheight\fR sizes and framerates. You can check which are
+\&\fIwidth\fRx\fIheight\fR sizes and frame rates. You can check which are
 supported using \fB\-list_formats all\fR for Video4Linux2 devices.
 Some devices, like \s-1TV\s0 cards, support one or more standards. It is possible
 to list all the supported standards using \fB\-list_standards all\fR.
@@ -766,7 +766,7 @@ Grab and show the input of a video4linux2 device:
 .Ve
 .IP "\(bu" 4
 Grab and record the input of a video4linux2 device, leave the
-framerate and size as previously set:
+frame rate and size as previously set:
 .Sp
 .Vb 1
 \&        ffmpeg \-f video4linux2 \-input_format mjpeg \-i /dev/video0 out.mpeg
@@ -799,7 +799,7 @@ This option allows to select the input format, when several are
 available.
 .IP "\fBframerate\fR" 4
 .IX Item "framerate"
-Set the preferred video framerate.
+Set the preferred video frame rate.
 .IP "\fBlist_formats\fR" 4
 .IX Item "list_formats"
 List available formats (supported pixel formats, codecs, and frame
@@ -926,7 +926,7 @@ To follow only when the mouse pointer reaches within 100 pixels to edge:
 .IP "\fBframerate\fR" 4
 .IX Item "framerate"
 Set the grabbing frame rate. Default value is \f(CW\*(C`ntsc\*(C'\fR,
-corresponding to a framerate of \f(CW\*(C`30000/1001\*(C'\fR.
+corresponding to a frame rate of \f(CW\*(C`30000/1001\*(C'\fR.
 .IP "\fBshow_region\fR" 4
 .IX Item "show_region"
 Show grabbed region on screen.
@@ -974,7 +974,7 @@ A description of the currently available output devices follows.
 .IX Subsection "caca"
 \&\s-1CACA\s0 output device.
 .PP
-This output devices allows to show a video stream in \s-1CACA\s0 window.
+This output device allows to show a video stream in \s-1CACA\s0 window.
 Only one \s-1CACA\s0 window is allowed per application, so you can
 have only one instance of this output device in an application.
 .PP
@@ -1055,7 +1055,7 @@ Show the list of available dither colors and exit:
 .IX Subsection "sdl"
 \&\s-1SDL\s0 (Simple DirectMedia Layer) output device.
 .PP
-This output devices allows to show a video stream in an \s-1SDL\s0
+This output device allows to show a video stream in an \s-1SDL\s0
 window. Only one \s-1SDL\s0 window is allowed per application, so you can
 have only one instance of this output device in an application.
 .PP
@@ -1094,6 +1094,71 @@ The following command shows the \fBffmpeg\fR output is an
 .SS "sndio"
 .IX Subsection "sndio"
 sndio audio output device.
+.SS "xv"
+.IX Subsection "xv"
+\&\s-1XV\s0 (XVideo) output device.
+.PP
+This output device allows to show a video stream in a X Window System
+window.
+.PP
+\fIOptions\fR
+.IX Subsection "Options"
+.IP "\fBdisplay_name\fR" 4
+.IX Item "display_name"
+Specify the hardware display name, which determines the display and
+communications domain to be used.
+.Sp
+The display name or \s-1DISPLAY\s0 environment variable can be a string in
+the format \fIhostname\fR[:\fInumber\fR[.\fIscreen_number\fR]].
+.Sp
+\&\fIhostname\fR specifies the name of the host machine on which the
+display is physically attached. \fInumber\fR specifies the number of
+the display server on that host machine. \fIscreen_number\fR specifies
+the screen to be used on that server.
+.Sp
+If unspecified, it defaults to the value of the \s-1DISPLAY\s0 environment
+variable.
+.Sp
+For example, \f(CW\*(C`dual\-headed:0.1\*(C'\fR would specify screen 1 of display
+0 on the machine named ``dual\-headed''.
+.Sp
+Check the X11 specification for more detailed information about the
+display name format.
+.IP "\fBwindow_size\fR" 4
+.IX Item "window_size"
+Set the created window size, can be a string of the form
+\&\fIwidth\fRx\fIheight\fR or a video size abbreviation. If not
+specified it defaults to the size of the input video.
+.IP "\fBwindow_x\fR" 4
+.IX Item "window_x"
+.PD 0
+.IP "\fBwindow_y\fR" 4
+.IX Item "window_y"
+.PD
+Set the X and Y window offsets for the created window. They are both
+set to 0 by default. The values may be ignored by the window manager.
+.IP "\fBwindow_title\fR" 4
+.IX Item "window_title"
+Set the window title, if not specified default to the filename
+specified for the output device.
+.PP
+For more information about XVideo see <\fBhttp://www.x.org/\fR>.
+.PP
+\fIExamples\fR
+.IX Subsection "Examples"
+.IP "\(bu" 4
+Decode, display and encode video input with \fBffmpeg\fR at the
+same time:
+.Sp
+.Vb 1
+\&        ffmpeg \-i INPUT OUTPUT \-f xv display
+.Ve
+.IP "\(bu" 4
+Decode and display the input video to multiple X11 windows:
+.Sp
+.Vb 1
+\&        ffmpeg \-i INPUT \-f xv normal \-vf negate \-f xv negated
+.Ve
 .SH "SEE ALSO"
 .IX Header "SEE ALSO"
 \&\fIffmpeg\fR\|(1), \fIffplay\fR\|(1), \fIffprobe\fR\|(1), \fIffserver\fR\|(1), \fIlibavdevice\fR\|(3)

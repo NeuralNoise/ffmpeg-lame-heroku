@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "FFMPEG-PROTOCOLS 1"
-.TH FFMPEG-PROTOCOLS 1 "2013-03-31" " " " "
+.TH FFMPEG-PROTOCOLS 1 "2013-06-02" " " " "
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -234,6 +234,38 @@ use the command:
 The ff* tools default to the file protocol, that is a resource
 specified with the name \*(L"\s-1FILE\s0.mpeg\*(R" is interpreted as the \s-1URL\s0
 \&\*(L"file:FILE.mpeg\*(R".
+.SS "ftp"
+.IX Subsection "ftp"
+\&\s-1FTP\s0 (File Transfer Protocol)
+.PP
+Allow to read from or write to remote resources using \s-1FTP\s0 protocol.
+.PP
+Following syntax is required.
+.PP
+.Vb 1
+\&        ftp://[user[:password]@]server[:port]/path/to/remote/resource.mpeg
+.Ve
+.PP
+This protocol accepts the following options.
+.IP "\fBtimeout\fR" 4
+.IX Item "timeout"
+Set timeout of socket I/O operations used by the underlying low level
+operation. By default it is set to \-1, which means that the timeout is
+not specified.
+.IP "\fBftp-anonymous-password\fR" 4
+.IX Item "ftp-anonymous-password"
+Password used when login as anonymous user. Typically an e\-mail address
+should be used.
+.IP "\fBftp-write-seekable\fR" 4
+.IX Item "ftp-write-seekable"
+Control seekability of connection during encoding. If set to 1 the
+resource is supposed to be seekable, if set to 0 it is assumed not
+to be seekable. Default value is 0.
+.PP
+\&\s-1NOTE:\s0 Protocol can be used as output, but it is recommended to not do
+it, unless special care is taken (tests, customized server configuration
+etc.). Different \s-1FTP\s0 servers behave in different way during seek
+operation. ff* tools may produce incomplete content due to server limitations.
 .SS "gopher"
 .IX Subsection "gopher"
 Gopher protocol.
@@ -658,6 +690,9 @@ To receive a stream in realtime:
 .Vb 1
 \&        ffmpeg \-rtsp_flags listen \-i rtsp://ownaddress/live.sdp <output>
 .Ve
+.IP "\fBstimeout\fR" 4
+.IX Item "stimeout"
+Socket \s-1IO\s0 timeout in micro seconds.
 .SS "sap"
 .IX Subsection "sap"
 Session Announcement Protocol (\s-1RFC\s0 2974). This is not technically a

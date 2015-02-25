@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "FFMPEG-CODECS 1"
-.TH FFMPEG-CODECS 1 "2013-03-31" " " " "
+.TH FFMPEG-CODECS 1 "2013-06-02" " " " "
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -301,8 +301,8 @@ Set codec time base.
 .Sp
 It is the fundamental unit of time (in seconds) in terms of which
 frame timestamps are represented. For fixed-fps content, timebase
-should be 1/framerate and timestamp increments should be identically
-1.
+should be \f(CW\*(C`1 / frame_rate\*(C'\fR and timestamp increments should be
+identically 1.
 .IP "\fBg\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "g integer (encoding,video)"
 Set the group of picture size. Default value is 12.
@@ -2158,6 +2158,40 @@ Selected by Encoder (default)
 .RE
 .RS 4
 .RE
+.SS "libmp3lame"
+.IX Subsection "libmp3lame"
+\&\s-1LAME\s0 (Lame Ain't an \s-1MP3\s0 Encoder) \s-1MP3\s0 encoder wrapper
+.PP
+Requires the presence of the libmp3lame headers and library during
+configuration. You need to explicitly configure the build with
+\&\f(CW\*(C`\-\-enable\-libmp3lame\*(C'\fR.
+.PP
+\fIOption Mapping\fR
+.IX Subsection "Option Mapping"
+.PP
+The following options are supported by the libmp3lame wrapper,
+the LAME-equivalent options follow the FFmpeg ones.
+.IP "\fBFFmpeg             :  \s-1LAME\s0\fR" 4
+.IX Item "FFmpeg             :  LAME"
+.PD 0
+.IP "\fBb                  :  b\fR" 4
+.IX Item "b                  :  b"
+.PD
+FFmpeg \f(CW\*(C`b\*(C'\fR option is expressed in bits/s, lame \f(CW\*(C`bitrate\*(C'\fR
+in kilobits/s.
+.IP "\fBq                  :  V\fR" 4
+.IX Item "q                  :  V"
+Quality setting for \s-1VBR\s0.
+.IP "\fBcompression_level  :  q\fR" 4
+.IX Item "compression_level  :  q"
+Algorithm quality. Valid options are integers from 0\-9.
+.IP "\fBreservoir          :  N.A.\fR" 4
+.IX Item "reservoir          :  N.A."
+Enable use of bit reservoir. \s-1LAME\s0 has this enabled by default.
+.IP "\fBjoint_stereo       :  \-m j\fR" 4
+.IX Item "joint_stereo       :  -m j"
+Enables the encoder to use (on a frame by frame basis) either L/R
+stereo or mid/side stereo.
 .SH "VIDEO ENCODERS"
 .IX Header "VIDEO ENCODERS"
 A description of some of the currently available video encoders
@@ -2613,6 +2647,103 @@ Override the x264 configuration using a :\-separated list of key=value parameter
 .PP
 Encoding avpresets for common usages are provided so they can be used with the
 general presets system (e.g. passing the \f(CW\*(C`\-pre\*(C'\fR option).
+.SS "png"
+.IX Subsection "png"
+\&\s-1PNG\s0 image encoder.
+.PP
+\fIPrivate options\fR
+.IX Subsection "Private options"
+.IP "\fBdpi\fR \fIinteger\fR" 4
+.IX Item "dpi integer"
+Set physical density of pixels, in dots per inch, unset by default
+.IP "\fBdpm\fR \fIinteger\fR" 4
+.IX Item "dpm integer"
+Set physical density of pixels, in dots per meter, unset by default
+.SS "ProRes"
+.IX Subsection "ProRes"
+Apple ProRes encoder.
+.PP
+FFmpeg contains 2 ProRes encoders, the prores-aw and prores-ks encoder.
+The used encoder can be choosen with the \f(CW\*(C`\-vcodec\*(C'\fR option.
+.PP
+\fIPrivate Options for prores-ks\fR
+.IX Subsection "Private Options for prores-ks"
+.IP "\fBprofile\fR \fIinteger\fR" 4
+.IX Item "profile integer"
+Select the ProRes profile to encode
+.RS 4
+.IP "\fBproxy\fR" 4
+.IX Item "proxy"
+.PD 0
+.IP "\fBlt\fR" 4
+.IX Item "lt"
+.IP "\fBstandard\fR" 4
+.IX Item "standard"
+.IP "\fBhq\fR" 4
+.IX Item "hq"
+.IP "\fB4444\fR" 4
+.IX Item "4444"
+.RE
+.RS 4
+.RE
+.IP "\fBquant_mat\fR \fIinteger\fR" 4
+.IX Item "quant_mat integer"
+.PD
+Select quantization matrix.
+.RS 4
+.IP "\fBauto\fR" 4
+.IX Item "auto"
+.PD 0
+.IP "\fBdefault\fR" 4
+.IX Item "default"
+.IP "\fBproxy\fR" 4
+.IX Item "proxy"
+.IP "\fBlt\fR" 4
+.IX Item "lt"
+.IP "\fBstandard\fR" 4
+.IX Item "standard"
+.IP "\fBhq\fR" 4
+.IX Item "hq"
+.RE
+.RS 4
+.PD
+.Sp
+If set to \fIauto\fR, the matrix matching the profile will be picked.
+If not set, the matrix providing the highest quality, \fIdefault\fR, will be
+picked.
+.RE
+.IP "\fBbits_per_mb\fR \fIinteger\fR" 4
+.IX Item "bits_per_mb integer"
+How many bits to allot for coding one macroblock. Different profiles use
+between 200 and 2400 bits per macroblock, the maximum is 8000.
+.IP "\fBmbs_per_slice\fR \fIinteger\fR" 4
+.IX Item "mbs_per_slice integer"
+Number of macroblocks in each slice (1\-8); the default value (8)
+should be good in almost all situations.
+.IP "\fBvendor\fR \fIstring\fR" 4
+.IX Item "vendor string"
+Override the 4\-byte vendor \s-1ID\s0.
+A custom vendor \s-1ID\s0 like \fIapl0\fR would claim the stream was produced by
+the Apple encoder.
+.IP "\fBalpha_bits\fR \fIinteger\fR" 4
+.IX Item "alpha_bits integer"
+Specify number of bits for alpha component.
+Possible values are \fI0\fR, \fI8\fR and \fI16\fR.
+Use \fI0\fR to disable alpha plane coding.
+.PP
+\fISpeed considerations\fR
+.IX Subsection "Speed considerations"
+.PP
+In the default mode of operation the encoder has to honor frame constraints
+(i.e. not produc frames with size bigger than requested) while still making
+output picture as good as possible.
+A frame containing a lot of small details is harder to compress and the encoder
+would spend more time searching for appropriate quantizers for each slice.
+.PP
+Setting a higher \fBbits_per_mb\fR limit will improve the speed.
+.PP
+For the fastest encoding speed set the \fBqscale\fR parameter (4 is the
+recommended value) and do not set a size constraint.
 .SH "SEE ALSO"
 .IX Header "SEE ALSO"
 \&\fIffmpeg\fR\|(1), \fIffplay\fR\|(1), \fIffprobe\fR\|(1), \fIffserver\fR\|(1), \fIlibavcodec\fR\|(3)

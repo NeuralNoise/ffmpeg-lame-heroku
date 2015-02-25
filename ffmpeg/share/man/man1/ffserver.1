@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "FFSERVER 1"
-.TH FFSERVER 1 "2013-03-31" " " " "
+.TH FFSERVER 1 "2013-06-02" " " " "
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -342,34 +342,35 @@ ffmpeg/ffserver. It may work but it is not guaranteed to work.
 differing versions of tools. \s-1FFM2\s0 is the default.
 .SH "OPTIONS"
 .IX Header "OPTIONS"
-All the numerical options, if not specified otherwise, accept in input
-a string representing a number, which may contain one of the
-\&\s-1SI\s0 unit prefixes, for example 'K', 'M', 'G'.
-If 'i' is appended after the prefix, binary prefixes are used,
-which are based on powers of 1024 instead of powers of 1000.
-The 'B' postfix multiplies the value by 8, and can be
-appended after a unit prefix or used alone. This allows using for
-example '\s-1KB\s0', 'MiB', 'G' and 'B' as number postfix.
+All the numerical options, if not specified otherwise, accept a string
+representing a number as input, which may be followed by one of the \s-1SI\s0
+unit prefixes, for example: 'K', 'M', or 'G'.
+.PP
+If 'i' is appended to the \s-1SI\s0 unit prefix, the complete prefix will be
+interpreted as a unit prefix for binary multiplies, which are based on
+powers of 1024 instead of powers of 1000. Appending 'B' to the \s-1SI\s0 unit
+prefix multiplies the value by 8. This allows using, for example:
+\&'\s-1KB\s0', 'MiB', 'G' and 'B' as number suffixes.
 .PP
 Options which do not take arguments are boolean options, and set the
 corresponding value to true. They can be set to false by prefixing
-with \*(L"no\*(R" the option name, for example using \*(L"\-nofoo\*(R" in the
-command line will set to false the boolean option with name \*(L"foo\*(R".
+the option name with \*(L"no\*(R". For example using \*(L"\-nofoo\*(R"
+will set the boolean option with name \*(L"foo\*(R" to false.
 .SS "Stream specifiers"
 .IX Subsection "Stream specifiers"
 Some options are applied per-stream, e.g. bitrate or codec. Stream specifiers
-are used to precisely specify which stream(s) does a given option belong to.
+are used to precisely specify which stream(s) a given option belongs to.
 .PP
 A stream specifier is a string generally appended to the option name and
-separated from it by a colon. E.g. \f(CW\*(C`\-codec:a:1 ac3\*(C'\fR option contains
-\&\f(CW\*(C`a:1\*(C'\fR stream specifier, which matches the second audio stream. Therefore it
+separated from it by a colon. E.g. \f(CW\*(C`\-codec:a:1 ac3\*(C'\fR contains the
+\&\f(CW\*(C`a:1\*(C'\fR stream specifier, which matches the second audio stream. Therefore, it
 would select the ac3 codec for the second audio stream.
 .PP
-A stream specifier can match several streams, the option is then applied to all
+A stream specifier can match several streams, so that the option is applied to all
 of them. E.g. the stream specifier in \f(CW\*(C`\-b:a 128k\*(C'\fR matches all audio
 streams.
 .PP
-An empty stream specifier matches all streams, for example \f(CW\*(C`\-codec copy\*(C'\fR
+An empty stream specifier matches all streams. For example, \f(CW\*(C`\-codec copy\*(C'\fR
 or \f(CW\*(C`\-codec: copy\*(C'\fR would copy all the streams without reencoding.
 .PP
 Possible forms of stream specifiers are:
@@ -379,17 +380,18 @@ Matches the stream with this index. E.g. \f(CW\*(C`\-threads:1 4\*(C'\fR would s
 thread count for the second stream to 4.
 .IP "\fIstream_type\fR\fB[:\fR\fIstream_index\fR\fB]\fR" 4
 .IX Item "stream_type[:stream_index]"
-\&\fIstream_type\fR is one of: 'v' for video, 'a' for audio, 's' for subtitle,
-\&'d' for data and 't' for attachments. If \fIstream_index\fR is given, then
-matches stream number \fIstream_index\fR of this type. Otherwise matches all
+\&\fIstream_type\fR is one of following: 'v' for video, 'a' for audio, 's' for subtitle,
+\&'d' for data, and 't' for attachments. If \fIstream_index\fR is given, then it matches
+stream number \fIstream_index\fR of this type. Otherwise, it matches all
 streams of this type.
 .IP "\fBp:\fR\fIprogram_id\fR\fB[:\fR\fIstream_index\fR\fB]\fR" 4
 .IX Item "p:program_id[:stream_index]"
-If \fIstream_index\fR is given, then matches stream number \fIstream_index\fR in
-program with id \fIprogram_id\fR. Otherwise matches all streams in this program.
+If \fIstream_index\fR is given, then it matches the stream with number \fIstream_index\fR
+in the program with the id \fIprogram_id\fR. Otherwise, it matches all streams in the
+program.
 .IP "\fB#\fR\fIstream_id\fR" 4
 .IX Item "#stream_id"
-Matches the stream by format-specific \s-1ID\s0.
+Matches the stream by a format-specific \s-1ID\s0.
 .SS "Generic options"
 .IX Subsection "Generic options"
 These options are shared amongst the ff* tools.
@@ -419,6 +421,10 @@ Print detailed information about the demuxer named \fIdemuxer_name\fR. Use the
 .IX Item "muxer=muxer_name"
 Print detailed information about the muxer named \fImuxer_name\fR. Use the
 \&\fB\-formats\fR option to get a list of all muxers and demuxers.
+.IP "\fBfilter=\fR\fIfilter_name\fR" 4
+.IX Item "filter=filter_name"
+Print detailed information about the filter name \fIfilter_name\fR. Use the
+\&\fB\-filters\fR option to get a list of all filters.
 .RE
 .RS 4
 .RE
@@ -428,18 +434,6 @@ Show version.
 .IP "\fB\-formats\fR" 4
 .IX Item "-formats"
 Show available formats.
-.Sp
-The fields preceding the format names have the following meanings:
-.RS 4
-.IP "\fBD\fR" 4
-.IX Item "D"
-Decoding available
-.IP "\fBE\fR" 4
-.IX Item "E"
-Encoding available
-.RE
-.RS 4
-.RE
 .IP "\fB\-codecs\fR" 4
 .IX Item "-codecs"
 Show all codecs known to libavcodec.
@@ -470,31 +464,47 @@ Show available sample formats.
 .IP "\fB\-layouts\fR" 4
 .IX Item "-layouts"
 Show channel names and standard channel layouts.
-.IP "\fB\-loglevel\fR \fIloglevel\fR \fB| \-v\fR \fIloglevel\fR" 4
-.IX Item "-loglevel loglevel | -v loglevel"
+.IP "\fB\-loglevel [repeat+]\fR\fIloglevel\fR \fB| \-v [repeat+]\fR\fIloglevel\fR" 4
+.IX Item "-loglevel [repeat+]loglevel | -v [repeat+]loglevel"
 Set the logging level used by the library.
+Adding \*(L"repeat+\*(R" indicates that repeated log output should not be compressed
+to the first line and the \*(L"Last message repeated n times\*(R" line will be
+omitted. \*(L"repeat\*(R" can also be used alone.
+If \*(L"repeat\*(R" is used alone, and with no prior loglevel set, the default
+loglevel will be used. If multiple loglevel parameters are given, using
+\&'repeat' will not change the loglevel.
 \&\fIloglevel\fR is a number or a string containing one of the following values:
 .RS 4
 .IP "\fBquiet\fR" 4
 .IX Item "quiet"
-.PD 0
+Show nothing at all; be silent.
 .IP "\fBpanic\fR" 4
 .IX Item "panic"
+Only show fatal errors which could lead the process to crash, such as
+and assert failure. This is not currently used for anything.
 .IP "\fBfatal\fR" 4
 .IX Item "fatal"
+Only show fatal errors. These are errors after which the process absolutely
+cannot continue after.
 .IP "\fBerror\fR" 4
 .IX Item "error"
+Show all errors, including ones which can be recovered from.
 .IP "\fBwarning\fR" 4
 .IX Item "warning"
+Show all warnings and errors. Any message related to possibly
+incorrect or unexpected events will be shown.
 .IP "\fBinfo\fR" 4
 .IX Item "info"
+Show informative messages during processing. This is in addition to
+warnings and errors. This is the default value.
 .IP "\fBverbose\fR" 4
 .IX Item "verbose"
+Same as \f(CW\*(C`info\*(C'\fR, except more verbose.
 .IP "\fBdebug\fR" 4
 .IX Item "debug"
+Show everything, including debugging information.
 .RE
 .RS 4
-.PD
 .Sp
 By default the program logs to stderr, if coloring is supported by the
 terminal, colors are used to mark errors and warnings. Log coloring
@@ -540,6 +550,110 @@ for testing. Do not use it unless you know what you're doing.
 \&        ffmpeg \-cpuflags mmx ...
 \&        ffmpeg \-cpuflags 0 ...
 .Ve
+.Sp
+Possible flags for this option are:
+.RS 4
+.IP "\fBx86\fR" 4
+.IX Item "x86"
+.RS 4
+.PD 0
+.IP "\fBmmx\fR" 4
+.IX Item "mmx"
+.IP "\fBmmxext\fR" 4
+.IX Item "mmxext"
+.IP "\fBsse\fR" 4
+.IX Item "sse"
+.IP "\fBsse2\fR" 4
+.IX Item "sse2"
+.IP "\fBsse2slow\fR" 4
+.IX Item "sse2slow"
+.IP "\fBsse3\fR" 4
+.IX Item "sse3"
+.IP "\fBsse3slow\fR" 4
+.IX Item "sse3slow"
+.IP "\fBssse3\fR" 4
+.IX Item "ssse3"
+.IP "\fBatom\fR" 4
+.IX Item "atom"
+.IP "\fBsse4.1\fR" 4
+.IX Item "sse4.1"
+.IP "\fBsse4.2\fR" 4
+.IX Item "sse4.2"
+.IP "\fBavx\fR" 4
+.IX Item "avx"
+.IP "\fBxop\fR" 4
+.IX Item "xop"
+.IP "\fBfma4\fR" 4
+.IX Item "fma4"
+.IP "\fB3dnow\fR" 4
+.IX Item "3dnow"
+.IP "\fB3dnowext\fR" 4
+.IX Item "3dnowext"
+.IP "\fBcmov\fR" 4
+.IX Item "cmov"
+.RE
+.RS 4
+.RE
+.IP "\fB\s-1ARM\s0\fR" 4
+.IX Item "ARM"
+.RS 4
+.IP "\fBarmv5te\fR" 4
+.IX Item "armv5te"
+.IP "\fBarmv6\fR" 4
+.IX Item "armv6"
+.IP "\fBarmv6t2\fR" 4
+.IX Item "armv6t2"
+.IP "\fBvfp\fR" 4
+.IX Item "vfp"
+.IP "\fBvfpv3\fR" 4
+.IX Item "vfpv3"
+.IP "\fBneon\fR" 4
+.IX Item "neon"
+.RE
+.RS 4
+.RE
+.IP "\fBPowerPC\fR" 4
+.IX Item "PowerPC"
+.RS 4
+.IP "\fBaltivec\fR" 4
+.IX Item "altivec"
+.RE
+.RS 4
+.RE
+.IP "\fBSpecific Processors\fR" 4
+.IX Item "Specific Processors"
+.RS 4
+.IP "\fBpentium2\fR" 4
+.IX Item "pentium2"
+.IP "\fBpentium3\fR" 4
+.IX Item "pentium3"
+.IP "\fBpentium4\fR" 4
+.IX Item "pentium4"
+.IP "\fBk6\fR" 4
+.IX Item "k6"
+.IP "\fBk62\fR" 4
+.IX Item "k62"
+.IP "\fBathlon\fR" 4
+.IX Item "athlon"
+.IP "\fBathlonxp\fR" 4
+.IX Item "athlonxp"
+.IP "\fBk8\fR" 4
+.IX Item "k8"
+.RE
+.RS 4
+.RE
+.RE
+.RS 4
+.RE
+.IP "\fB\-opencl_options options (\fR\fIglobal\fR\fB)\fR" 4
+.IX Item "-opencl_options options (global)"
+.PD
+Set OpenCL environment options. This option is only available when
+FFmpeg has been compiled with \f(CW\*(C`\-\-enable\-opencl\*(C'\fR.
+.Sp
+\&\fIoptions\fR must be a list of \fIkey\fR=\fIvalue\fR option pairs
+separated by ':'. See the ``OpenCL Options'' section in the
+ffmpeg-utils manual for the list of supported options.
 .SS "AVOptions"
 .IX Subsection "AVOptions"
 These options are provided directly by the libavformat, libavdevice and
@@ -587,7 +701,8 @@ Enable debug mode. This option increases log verbosity, directs log
 messages to stdout.
 .SH "SEE ALSO"
 .IX Header "SEE ALSO"
-The \fIdoc/ffserver.conf\fR example, \fIffmpeg\fR\|(1), \fIffplay\fR\|(1), \fIffprobe\fR\|(1),
+\&\fIffserver\-all\fR\|(1),
+the \fIdoc/ffserver.conf\fR example, \fIffmpeg\fR\|(1), \fIffplay\fR\|(1), \fIffprobe\fR\|(1),
 \&\fIffmpeg\-utils\fR\|(1), \fIffmpeg\-scaler\fR\|(1), \fIffmpeg\-resampler\fR\|(1),
 \&\fIffmpeg\-codecs\fR\|(1), \fIffmpeg\-bitstream\-filters\fR\|(1), \fIffmpeg\-formats\fR\|(1),
 \&\fIffmpeg\-devices\fR\|(1), \fIffmpeg\-protocols\fR\|(1), \fIffmpeg\-filters\fR\|(1)
